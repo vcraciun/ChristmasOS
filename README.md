@@ -44,4 +44,4 @@ An educational Operating System
 
 
 ## Screenshot
-[!Screenshot](screenshot.png)
+![Screenshot](screenshot.png)
