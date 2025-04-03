@@ -1,0 +1,106 @@
+#ifndef __FAT32__
+#define __FAT32__
+
+#include "types.h"
+
+#define MAX_USED_CLUSTER 0x0FFFFFF5
+#define RESERVEDCLUSTER0 0x0FFFFFF6
+#define BAD_CLUSTER      0x0FFFFFF7
+#define RESERVEDCLUSTER1 0x0FFFFFF8
+#define RESERVEDCLUSTER2 0x0FFFFFF9
+#define RESERVEDCLUSTER3 0x0FFFFFFA
+#define RESERVEDCLUSTER4 0x0FFFFFFB
+#define RESERVEDCLUSTER5 0x0FFFFFFC
+#define RESERVEDCLUSTER6 0x0FFFFFFD
+#define RESERVEDCLUSTER7 0x0FFFFFFE
+#define LAST_CLUSTER     0x0FFFFFFF
+
+#define FILE_DELETED     0xE5
+
+typedef struct _FAT32BPB{
+	byte jmpnop[3];
+	char oemname[8];
+	word bytes_per_sector;
+	byte sectors_per_cluster;
+	word reserved_sectors;
+	byte fat_copies;
+	word max_root_dir_entryes;
+	word nr_sectors_nonfat32;
+	byte media_descriptor;
+	word sectors_per_fat;
+	word sectors_per_track;
+	word number_of_heads;
+	dword nr_hidden_sectors;
+	dword nr_sectors;
+	dword nr_sectors_per_fat;
+	word fat_mirr;
+	word fat32_version;
+	dword root_dir_cluster;
+	word fs_info_sector;
+	word backup_boot_sector;
+	byte reserved[12];
+	byte logical_drive_number;
+	byte unused;
+	byte ext_sig;
+	dword serial_nr;
+	char vol_name[11];
+	char partition_type_name[8];
+}FAT32BPB;
+
+typedef struct _dos_time                 /* Warning: this struct must be packed */
+{
+	unsigned two_secs : 5;				 /* low 5 bits: 2-second increments */
+	unsigned minutes : 6;				 /* middle 6 bits: minutes */
+	unsigned hours : 5;					 /* high 5 bits: hours (0-23) */
+}dos_time;                               /* 2 bytes total */
+
+typedef struct _dos_date                 /* Warning: this struct must be packed */
+{
+	unsigned date : 5;					 /* low 5 bits: date (1-31) */
+	unsigned month : 4;					 /* middle 4 bits: month (1-12) */
+	unsigned year : 7;					 /* high 7 bits: year - 1980 */
+}dos_date;                               /* 2 bytes total */
+
+typedef struct _attrib                   /* Warning: this struct must be packed */
+{
+	int read_only : 1;      /* b0 */
+	int hidden : 1;
+	int system : 1;
+	int volume_label : 1;
+	int directory : 1;
+	int archive : 1;
+	int reserved : 2;       /* b6, b7 */
+}attrib;   
+
+typedef struct _FAT_DIRENT               
+{
+	byte  name[8];               /* ALL-CAPS, pad right with spaces */
+	byte  ext[3];                /* ALL-CAPS, pad right with spaces */
+	attrib attrs;                /* attribute byte */
+	byte  reserved;              /* =0 */
+	byte  ctime_ms;              /* file creation time, 10ms units */
+	dos_time ctime;              	/* file creation time, in DOS format */
+	dos_date cdate;              	/* file creation date, in DOS format */
+	dos_date adate;              	/* DOS date of last file access */
+	word st_clust_msw;       	/* high 16 bits of starting cluster (FAT32) */
+	word mtime;              	/* DOS time of last file modification */
+	word mdate;              	/* DOS date of last file modification */
+	word st_clust;           	/* starting cluster */
+	dword file_size;          	/* in bytes */
+}fat_dirent; 
+
+typedef struct _FHANDLE{
+	byte drive;
+	byte partition;
+	fat_dirent filededsc;
+}FHANDLE;
+
+class FAT32{
+	private:
+		static FHANDLE *handles;
+
+	public:
+
+};
+
+#endif

@@ -1,0 +1,269 @@
+          [0000000000000000]                                                    use16
+                                                                                org 0x7C00
+                                                                                
+          [0000000000007C00]                                                    NULL_SELECTOR = 0
+                                                                                DATA_SELECTOR = 2 shl 3 		; flat data selector (ring 0)
+                                                                                CODE_SELECTOR = 1 shl 3 		; 32-bit code selector (ring 0)
+                                                                                
+                                                                                SEGMENT_LFB EQU 0x1000
+                                                                                OFFSET_LFB  EQU 0xF10
+                                                                                
+                                                                                VESA_GINFO EQU 0x2000
+                                                                                VESA_MINFO EQU 0x2800
+                                                                                
+                                                                                DELAY_1SECOND EQU 1000000
+                                                                                
+                                                                                virtual at 0x3000
+          [0000000000003000]                                                    modes_list:
+                                                                                	 rw 1 ;resx
+          [0000000000003002]                                                    	 rw 1 ;resy
+          [0000000000003004]                                                    	 rb 1 ;bpp
+          [0000000000003005]                                                    	 rd 1 ;lfb
+          [0000000000003009]                                                    	 rw 1 ;video-mode
+          [000000000000300B]                                                    end virtual
+                                                                                
+          [0000000000007C00]                                                    virtual at 0x800
+          [0000000000000800]                                                    int_number      rb 1
+          [0000000000000801]                                                    realmode_error  rb 1
+          [0000000000000802]                                                    realmode_ax     rw 1
+          [0000000000000804]                                                    realmode_bx     rw 1
+          [0000000000000806]                                                    realmode_cx     rw 1
+          [0000000000000808]                                                    realmode_dx     rw 1
+          [000000000000080A]                                                    end virtual
+                                                                                
+          [0000000000007C00]                                                    virtual at 0x810
+          [0000000000000810]                                                    packet:
+                                                                                	.size    rw 1
+          [0000000000000812]                                                    	.bloks   rw 1
+          [0000000000000814]                                                    	.offset  rw 1
+          [0000000000000816]                                                    	.seg     rw 1
+          [0000000000000818]                                                    	.lower32 rd 1
+          [000000000000081C]                                                    	.upper32 rd 1
+          [0000000000000820]                                                    end virtual
+                                                                                
+                                                                                ;------------------------------------------;
+                                                                                ;  Standard BIOS Parameter Block, "BPB".   ;
+                                                                                ;------------------------------------------;
+          [0000000000007C00]                                                    boot:	  
+00000000:                    31 C0                                              	xor ax, ax				  ; ax=0
+00000002: [0000000000007C02] 8E D8                                              	mov ds, ax				  ; segment de date = 0
+00000004: [0000000000007C04] 8E C0                                              	mov es, ax				  ; segment extra = 0
+00000006: [0000000000007C06] 8E D0                                              	mov ss, ax				  ; segment stiva = 0
+00000008: [0000000000007C08] BC 00 7B                                           	mov sp,0x7B00
+0000000B: [0000000000007C0B] BD 00 7B                                           	mov bp,0x7B00
+                                                                                
+0000000E: [0000000000007C0E] BF 00 06                                           	mov di,0x600
+00000011: [0000000000007C11] BE 00 7C                                           	mov si,0x7C00
+00000014: [0000000000007C14] B9 00 01                                           	mov cx,0x100
+00000017: [0000000000007C17] F3 A5                                              	rep movsw
+                                                                                
+00000019: [0000000000007C19] EA 1E 06 00 00                                     	jmp 0:0x600+continue_loading-boot
+                                                                                
+          [0000000000007C1E]                                                    continue_loading:
+0000001E:                    E8 A6 00                                           	call read_42h
+                                                                                
+00000021: [0000000000007C21] E8 3C 00                                           	call get_lfb	
+                                                                                
+00000024: [0000000000007C24] FA                                                 	cli				
+00000025: [0000000000007C25] E8 13 00                                           	call Enable_A20	
+                                                                                
+00000028: [0000000000007C28] 2E 0F 01 16 80 7D                                  	lgdt [cs:GDTR]
+                                                                                
+0000002E: [0000000000007C2E] 0F 20 C0                                           	mov	eax,cr0 		
+00000031: [0000000000007C31] 0C 01                                              	or	al,1
+00000033: [0000000000007C33] 0F 22 C0                                           	mov	cr0,eax
+                                                                                
+00000036: [0000000000007C36] EA 52 07 08 00                                     	jmp	CODE_SELECTOR:0x600+pm_start-boot
+                                                                                
+          [0000000000007C3B]                                                    Enable_A20:
+0000003B:                    60                                                     pusha				 
+0000003C: [0000000000007C3C] FC                                                     cld
+0000003D: [0000000000007C3D] B0 FF                                                  mov   al,255			   
+0000003F: [0000000000007C3F] E6 A1                                                  out   0xa1,al
+00000041: [0000000000007C41] E6 21                                                  out   0x21,al
+          [0000000000007C43]                                                    l.5:
+00000043:                    E4 64                                                  in	  al,0x64			   
+00000045: [0000000000007C45] A8 02                                                  test  al,2				   
+00000047: [0000000000007C47] 75 FA                                                  jnz   l.5				   
+00000049: [0000000000007C49] B0 D1                                                  mov   al,0xD1			   
+0000004B: [0000000000007C4B] E6 64                                                  out   0x64,al			   
+          [0000000000007C4D]                                                    l.6:
+0000004D:                    E4 64                                                  in	  al,0x64			   
+0000004F: [0000000000007C4F] A8 02                                                  test  al,2
+00000051: [0000000000007C51] 75 FA                                                  jnz   l.6				   
+00000053: [0000000000007C53] B0 DF                                                  mov   al,0xDF			   
+00000055: [0000000000007C55] E6 60                                                  out   0x60,al			   
+00000057: [0000000000007C57] B9 14 00                                               mov   cx,0x14
+          [0000000000007C5A]                                                    l.7:					       
+0000005A:                    E7 ED                                                  out   0xed,ax			   
+0000005C: [0000000000007C5C] E2 FC                                                  loop  l.7				   
+0000005E: [0000000000007C5E] 61                                                     popa
+0000005F: [0000000000007C5F] C3                                                     ret
+                                                                                
+          [0000000000007C60]                                                    get_lfb:
+00000060:                    BF 00 20                                           	mov di,VESA_GINFO
+00000063: [0000000000007C63] B8 00 4F                                           	mov ax,0x4F00
+00000066: [0000000000007C66] 66 C7 06 00 20 56 42 45 32                         	mov dword[VESA_GINFO],'VBE2'
+0000006F: [0000000000007C6F] CD 10                                              	int 0x10
+00000071: [0000000000007C71] 8B 36 0E 20                                        	mov si,word[VESA_GINFO+0x0e]
+00000075: [0000000000007C75] FF 36 10 20                                        	push word[VESA_GINFO+0x10]
+00000079: [0000000000007C79] 1F                                                 	pop ds
+0000007A: [0000000000007C7A] BB 00 30                                           	mov bx,modes_list
+0000007D: [0000000000007C7D] 31 D2                                              	xor dx,dx
+0000007F: [0000000000007C7F] FC                                                 	cld
+          [0000000000007C80]                                                    @@:
+00000080:                    AD                                                 	lodsw
+00000081: [0000000000007C81] 1E                                                 	push ds
+00000082: [0000000000007C82] 6A 00                                              	push 0
+00000084: [0000000000007C84] 1F                                                 	pop ds
+00000085: [0000000000007C85] 89 47 09                                           	mov word [bx+9],ax
+00000088: [0000000000007C88] 83 F8 FF                                           	cmp ax,0xFFFF
+0000008B: [0000000000007C8B] 74 29                                              	je @f
+0000008D: [0000000000007C8D] B9 01 4F                                           	mov cx,0x4F01
+00000090: [0000000000007C90] 91                                                 	xchg ax,cx
+00000091: [0000000000007C91] BF 00 28                                           	mov di,VESA_MINFO
+00000094: [0000000000007C94] CD 10                                              	int 0x10
+00000096: [0000000000007C96] A1 12 28                                           	mov ax,word[VESA_MINFO+0x12]
+00000099: [0000000000007C99] 89 07                                              	mov word[bx],ax
+0000009B: [0000000000007C9B] A1 14 28                                           	mov ax,word[VESA_MINFO+0x14]
+0000009E: [0000000000007C9E] 89 47 02                                           	mov word[bx+2],ax
+000000A1: [0000000000007CA1] A0 19 28                                           	mov al,byte[VESA_MINFO+0x19]
+000000A4: [0000000000007CA4] 88 47 04                                           	mov byte[bx+4],al	
+000000A7: [0000000000007CA7] 66 A1 28 28                                        	mov eax,dword[VESA_MINFO+0x28]
+000000AB: [0000000000007CAB] 66 89 47 05                                        	mov dword[bx+5],eax	
+000000AF: [0000000000007CAF] 83 C3 0B                                           	add bx,11
+000000B2: [0000000000007CB2] 42                                                 	inc dx
+000000B3: [0000000000007CB3] 1F                                                 	pop ds
+000000B4: [0000000000007CB4] EB CA                                              	jmp @b
+          [0000000000007CB6]                                                    @@:
+000000B6:                    1F                                                 	pop ds
+000000B7: [0000000000007CB7] B8 00 00                                           	mov ax,0
+000000BA: [0000000000007CBA] 8E D8                                              	mov ds,ax
+000000BC: [0000000000007CBC] 66 0F B7 D2                                        	movzx edx,dx
+000000C0: [0000000000007CC0] 26 66 89 16 FC 2F                                  	mov dword[es:modes_list-4],edx
+000000C6: [0000000000007CC6] C3                                                 	ret
+                                                                                
+                                                                                ;----------------------------------------------------;
+                                                                                ; read_42h - read sector(s) using INT13 extensions   ;
+                                                                                ; Entry:                                             ;
+                                                                                ;     dx = sector buffer segment                     ;
+                                                                                ;     cx = sector count                              ;
+                                                                                ;     eax = sector number (32-bit LBA)               ;
+                                                                                ; Exit:                                              ;
+                                                                                ;     cx = 1                                         ;
+                                                                                ;     [lba_read] = number of bytes read              ;
+                                                                                ;----------------------------------------------------;
+          [0000000000007CC7]                                                    read_42h:
+000000C7:                    B2 80                                              	mov dl,0x80
+000000C9: [0000000000007CC9] BE CE 07                                           	mov si,0x7CE
+000000CC: [0000000000007CCC] B4 42                                              	mov ah,42h
+000000CE: [0000000000007CCE] CD 13                                              	int 13h
+000000D0: [0000000000007CD0] B2 80                                              	mov dl,0x80
+000000D2: [0000000000007CD2] C6 06 D5 07 20                                     	mov byte[0x7CE+7],0x20
+000000D7: [0000000000007CD7] C6 06 D6 07 81                                     	mov byte[0x7CE+8],0x81
+000000DC: [0000000000007CDC] BE CE 07                                           	mov si,0x7CE
+000000DF: [0000000000007CDF] B4 42                                              	mov ah,0x42
+000000E1: [0000000000007CE1] CD 13                                              	int 13h
+000000E3: [0000000000007CE3] C3                                                 	ret
+                                                                                
+          [0000000000007CE4]                                                    do_16pmode:
+000000E4:                    B8 20 00                                           	  mov	  ax, 0x20
+000000E7: [0000000000007CE7] 8E D8                                              	  mov	  ds, ax
+000000E9: [0000000000007CE9] 8E C0                                              	  mov	  es, ax
+000000EB: [0000000000007CEB] 8E E0                                              	  mov	  fs, ax
+000000ED: [0000000000007CED] 8E E8                                              	  mov	  gs, ax
+000000EF: [0000000000007CEF] 8E D0                                              	  mov	  ss, ax
+                                                                                
+000000F1: [0000000000007CF1] FA                                                 	  cli
+000000F2: [0000000000007CF2] 0F 20 C0                                           	  mov	  eax, cr0
+000000F5: [0000000000007CF5] 24 FE                                              	  and	  al, 0xFE
+000000F7: [0000000000007CF7] 0F 22 C0                                           	  mov	  cr0, eax
+                                                                                
+000000FA: [0000000000007CFA] EA FF 06 00 00                                     	  jmp	  0:0x600+do_realm-boot
+                                                                                
+          [0000000000007CFF]                                                    do_realm:
+000000FF:                    31 C0                                              	  xor	  ax, ax
+00000101: [0000000000007D01] 8E D8                                              	  mov	  ds, ax
+00000103: [0000000000007D03] 8E C0                                              	  mov	  es, ax
+00000105: [0000000000007D05] 8E D0                                              	  mov	  ss, ax
+                                                                                
+00000107: [0000000000007D07] 0F 01 1E B2 07                                     	  lidt	  [0x600-boot+ridtr]		      ; realmode/variables.inc
+0000010C: [0000000000007D0C] FB                                                 	  sti
+                                                                                
+0000010D: [0000000000007D0D] A1 02 08                                           	  mov	  ax, word [realmode_ax]
+00000110: [0000000000007D10] 8B 1E 04 08                                        	  mov	  bx, word [realmode_bx]
+00000114: [0000000000007D14] 8B 0E 06 08                                        	  mov	  cx, word [realmode_cx]
+00000118: [0000000000007D18] 8B 16 08 08                                        	  mov	  dx, word [realmode_dx]
+                                                                                
+0000011C: [0000000000007D1C] 50                                                 	  push	  ax				      ; this is some cool shit.. ;)
+0000011D: [0000000000007D1D] A0 00 08                                           	  mov	  al, [int_number]	      ; interrupt to preform
+00000120: [0000000000007D20] A2 25 07                                           	  mov	  [0x600-boot+$+5], al		          ; move it to right pos.
+00000123: [0000000000007D23] 58                                                 	  pop	  ax
+00000124: [0000000000007D24] CD 00                                              	  int     0
+                                                                                
+00000126: [0000000000007D26] 73 05                                              	  jnc	  .no_error
+00000128: [0000000000007D28] C6 06 01 08 01                                     	  mov	  byte [realmode_error], 1
+                                                                                
+          [0000000000007D2D]                                                         .no_error:
+0000012D:                    A3 02 08                                           	  mov	  word [realmode_ax], ax
+00000130: [0000000000007D30] 89 1E 04 08                                        	  mov	  word [realmode_bx], bx
+00000134: [0000000000007D34] 89 0E 06 08                                        	  mov	  word [realmode_cx], cx
+00000138: [0000000000007D38] 89 16 08 08                                        	  mov	  word [realmode_dx], dx
+                                                                                
+0000013C: [0000000000007D3C] FA                                                 	  cli
+                                                                                
+0000013D: [0000000000007D3D] 0F 01 16 20 08                                     	  lgdt    [0x820]
+00000142: [0000000000007D42] 0F 20 C0                                           	  mov	  eax, cr0
+00000145: [0000000000007D45] 0C 01                                              	  or	  al, 1
+00000147: [0000000000007D47] 0F 22 C0                                           	  mov	  cr0, eax
+                                                                                
+                                                                                	  ;jmp	  pword 0x08:0x103E7
+0000014A: [0000000000007D4A] 66 EA FF 03 01 00 08 00                            	  jmp	  pword 0x08:0x103FF
+                                                                                
+          [0000000000007D52]                                                    USE32
+                                                                                
+                                                                                pm_start:
+00000152:                    B8 10 00 00 00                                     	mov	eax,DATA_SELECTOR	; load 4 GB data descriptor
+00000157: [0000000000007D57] 8E D8                                              	mov	ds,ax			; to all data segment registers
+00000159: [0000000000007D59] 8E C0                                              	mov	es,ax
+0000015B: [0000000000007D5B] 8E E0                                              	mov	fs,ax
+0000015D: [0000000000007D5D] 8E E8                                              	mov	gs,ax
+0000015F: [0000000000007D5F] 8E D0                                              	mov	ss,ax
+                                                                                
+00000161: [0000000000007D61] 0F 20 C0                                           	mov	eax,cr0
+00000164: [0000000000007D64] 83 C8 03                                           	or  eax,3
+00000167: [0000000000007D67] 83 E0 FB                                           	and eax,0xFFFFFFFB	; enable FPU x87 
+0000016A: [0000000000007D6A] 0F 22 C0                                           	mov	cr0,eax 		
+                                                                                
+0000016D: [0000000000007D6D] 0F 20 E2                                           	mov edx,CR4
+00000170: [0000000000007D70] 81 CA 00 06 00 00                                  	or  edx,0x00000600	; enable SSE   
+00000176: [0000000000007D76] 0F 22 E2                                           	mov CR4,edx
+                                                                                	
+00000179: [0000000000007D79] EA 00 03 01 00 08 00                               	jmp far CODE_SELECTOR:0x10300
+                                                                                
+          [0000000000007D80]                                                    GDTR:					; Global Descriptors Table Register
+00000180:                    27 00                                                dw 5*8-1				; limit of GDT (size minus one)
+00000182: [0000000000007D82] 8A 7D 00 00 00 00 00 00                              dq GDT				; linear address of GDT
+                                                                                
+0000018A: [0000000000007D8A] 00 00 00 00 00 00 00 00                            GDT dw 000000,0,00000,000h		
+00000192: [0000000000007D92] FF FF 00 00 00 9A CF 00                                dw 0FFFFh,0,9A00h,0CFh		
+0000019A: [0000000000007D9A] FF FF 00 00 00 92 CF 00                                dw 0FFFFh,0,9200h,0CFh		
+000001A2: [0000000000007DA2] FF FF 00 00 00 9A 00 00                                dw 0FFFFh,0,9A00h,000h		
+000001AA: [0000000000007DAA] FF FF 00 00 00 92 00 00                            	dw 0FFFFh,0,9200h,000h
+                                                                                
+          [0000000000007DB2]                                                    ridtr:
+000001B2:                    FF 03                                              	dw   0x3FF
+000001B4: [0000000000007DB4] 00 00 00 00                                        	dd   0
+                                                                                
+000001B8: [0000000000007DB8] 00 00 00 00 00 00                                  	rb boot+512-66-$
+                                                                                
+          [0000000000007DBE]                                                    ptable:
+000001BE:                    80 01 08 00 06 07 60 DB 00 01 00 00 00 DB 01 00    	db 0x80,0x01,0x08,0x00,0x06,0x07,0x60,0xDB,0x00,0x01,0x00,0x00,0x00,0xDB,0x01,0x00
+000001CE: [0000000000007DCE] 10 00 80 00 00 00 00 10 01 00 00 00 00 00 00 00    	db 0x10,0x00,0x80,0x00,0x00,0x00,0x00,0x10,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+000001DE: [0000000000007DDE] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    	db 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+000001EE: [0000000000007DEE] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    	db 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+                                                                                	
+                                                                                
+000001FE: [0000000000007DFE] 55 AA                                              	dw 0xAA55				  ; semnatura sectorului de BOOT
+                                                                                
+                                                                                

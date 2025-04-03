@@ -1,0 +1,24 @@
+ADDR        WHAT            SIZE
+-----------------------------------
+0x00600     MBR_REMAP       0x200
+0x00800     RM_INT DATA     0x10
+0x00810     INT 13h PACKET  0x10
+0x00820     GDT PTR         0x20          
+0x00840     GDT_TABLE       0x7C0
+0x01000		IDT_TABLE       0x1000
+0x02000     VESA INFO       0x700
+0x02700     HDD PARAMETERS  0x100
+0x02800     VESA MODE INFO  0x800
+0x03000     ALL MODES QUERY 0x4C00
+0x06000     STACK REAL MODE 0x1B00
+0x07B80     IDT PTR
+0x07C00     MBR_LOADED      0x200
+0x07E00     ESP_REALMODE    4
+0x07E04     ESP_PMODE       4
+0x10000     KERNEL          0x40000
+0x50000     BUFFER DISK RM  0x50000
+0xA0000     memoria video grafica
+0xB8000	    memoria video text
+0x100000    MEM_ALLOCATOR
+0x200000    STACK_KERNEL
+0x300000    FREE_MEM ALL

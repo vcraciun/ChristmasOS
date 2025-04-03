@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\VIDEO">
+      <UniqueIdentifier>{86a58755-7813-48ec-b5f8-a7a7382148fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\TEXT_VIDEO">
+      <UniqueIdentifier>{9bcccfbe-b96c-4a09-9404-c9beb84d780e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PROCESSOR">
+      <UniqueIdentifier>{d9a1d526-cd52-4d1b-8da8-4fb95cb3de3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MEMORY">
+      <UniqueIdentifier>{eae8eef9-359d-4245-85ea-d2726f66c341}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MBR">
+      <UniqueIdentifier>{afdc2e48-0811-4197-93b4-372912fa74e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source Files\FONTS">
+      <UniqueIdentifier>{a833dc8e-07f6-4359-9dd6-8e32e311a634}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MATH">
+      <UniqueIdentifier>{d9362059-bb8d-43dc-86b5-a6834d86d253}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\System">
+      <UniqueIdentifier>{1d047f2b-bc45-47a2-8873-8aa6dee87caf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DISK">
+      <UniqueIdentifier>{fa113717-c57f-4b0d-8b8e-153ecdcfcdc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IDT">
+      <UniqueIdentifier>{b515248e-962d-4bb9-8802-553cf73099b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\TIMER">
+      <UniqueIdentifier>{043df834-ffcb-473e-bbfe-bdec980ff15c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CMOS">
+      <UniqueIdentifier>{193beb6b-971f-4179-885a-fcc63f2dd119}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\KEYBOARD">
+      <UniqueIdentifier>{dac65fb5-23ef-49bb-9db2-053f198d8ab6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MOUSE">
+      <UniqueIdentifier>{dbad9aca-6451-4abe-af98-25ea92fc5f63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PIT">
+      <UniqueIdentifier>{62220f39-5fce-4734-b38f-234d34186e18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\TEXTAREA">
+      <UniqueIdentifier>{be26f848-a3bc-439a-ba64-1c0e36513dc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{80ada1a7-bc6b-4178-8763-b6ba42f63c72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PCI">
+      <UniqueIdentifier>{59fc5693-aa16-469c-8bd3-d3f23f3e3b04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\TASK">
+      <UniqueIdentifier>{fc03f5f0-a21c-4382-b300-06b5f8b5769b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Video.cpp">
+      <Filter>Source Files\VIDEO</Filter>
+    </ClCompile>
+    <ClCompile Include="txtvideo.cpp">
+      <Filter>Source Files\TEXT_VIDEO</Filter>
+    </ClCompile>
+    <ClCompile Include="processor.cpp">
+      <Filter>Source Files\PROCESSOR</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryManager.cpp">
+      <Filter>Source Files\MEMORY</Filter>
+    </ClCompile>
+    <ClCompile Include="Math.cpp">
+      <Filter>Source Files\MATH</Filter>
+    </ClCompile>
+    <ClCompile Include="System.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Disk.cpp">
+      <Filter>Source Files\DISK</Filter>
+    </ClCompile>
+    <ClCompile Include="idt.cpp">
+      <Filter>Source Files\IDT</Filter>
+    </ClCompile>
+    <ClCompile Include="timer.cpp">
+      <Filter>Source Files\TIMER</Filter>
+    </ClCompile>
+    <ClCompile Include="cmos.cpp">
+      <Filter>Source Files\CMOS</Filter>
+    </ClCompile>
+    <ClCompile Include="keyboard.cpp">
+      <Filter>Source Files\KEYBOARD</Filter>
+    </ClCompile>
+    <ClCompile Include="Fat.cpp">
+      <Filter>Source Files\DISK</Filter>
+    </ClCompile>
+    <ClCompile Include="pit.cpp">
+      <Filter>Source Files\PIT</Filter>
+    </ClCompile>
+    <ClCompile Include="TextArea.cpp">
+      <Filter>Source Files\TEXTAREA</Filter>
+    </ClCompile>
+    <ClCompile Include="pci.cpp">
+      <Filter>Source Files\PCI</Filter>
+    </ClCompile>
+    <ClCompile Include="devata.cpp">
+      <Filter>Source Files\DISK</Filter>
+    </ClCompile>
+    <ClCompile Include="m_mouse.cpp">
+      <Filter>Source Files\MOUSE</Filter>
+    </ClCompile>
+    <ClCompile Include="Task.cpp">
+      <Filter>Source Files\TASK</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiComponent.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="types.h">
+      <Filter>Source Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="crt.h">
+      <Filter>Source Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Video.h">
+      <Filter>Source Files\VIDEO</Filter>
+    </ClInclude>
+    <ClInclude Include="txtvideo.h">
+      <Filter>Source Files\TEXT_VIDEO</Filter>
+    </ClInclude>
+    <ClInclude Include="processor.h">
+      <Filter>Source Files\PROCESSOR</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryManager.h">
+      <Filter>Source Files\MEMORY</Filter>
+    </ClInclude>
+    <ClInclude Include="font8x8.h">
+      <Filter>Source Files\FONTS</Filter>
+    </ClInclude>
+    <ClInclude Include="font8x16.h">
+      <Filter>Source Files\FONTS</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>Source Files\MATH</Filter>
+    </ClInclude>
+    <ClInclude Include="System.h">
+      <Filter>Source Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Disk.h">
+      <Filter>Source Files\DISK</Filter>
+    </ClInclude>
+    <ClInclude Include="idt.h">
+      <Filter>Source Files\IDT</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.h">
+      <Filter>Source Files\TIMER</Filter>
+    </ClInclude>
+    <ClInclude Include="cmos.h">
+      <Filter>Source Files\CMOS</Filter>
+    </ClInclude>
+    <ClInclude Include="keyboard.h">
+      <Filter>Source Files\KEYBOARD</Filter>
+    </ClInclude>
+    <ClInclude Include="scancodes.h">
+      <Filter>Source Files\KEYBOARD</Filter>
+    </ClInclude>
+    <ClInclude Include="defines.h">
+      <Filter>Source Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Fat.h">
+      <Filter>Source Files\DISK</Filter>
+    </ClInclude>
+    <ClInclude Include="pit.h">
+      <Filter>Source Files\PIT</Filter>
+    </ClInclude>
+    <ClInclude Include="TextArea.h">
+      <Filter>Source Files\TEXTAREA</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIDS.h">
+      <Filter>Source Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="pci.h">
+      <Filter>Source Files\PCI</Filter>
+    </ClInclude>
+    <ClInclude Include="pcidefs.h">
+      <Filter>Source Files\PCI</Filter>
+    </ClInclude>
+    <ClInclude Include="devata.h">
+      <Filter>Source Files\DISK</Filter>
+    </ClInclude>
+    <ClInclude Include="ide.h">
+      <Filter>Source Files\DISK</Filter>
+    </ClInclude>
+    <ClInclude Include="m_mouse.h">
+      <Filter>Source Files\MOUSE</Filter>
+    </ClInclude>
+    <ClInclude Include="Task.h">
+      <Filter>Source Files\TASK</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI.h">
+      <Filter>Source Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiComponent.h">
+      <Filter>Source Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="EventHandler.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="mbr.lst">
+      <Filter>Source Files\MBR</Filter>
+    </None>
+    <None Include="mbr.asm">
+      <Filter>Source Files\MBR</Filter>
+    </None>
+    <None Include="crt.asm">
+      <Filter>Source Files\Header Files</Filter>
+    </None>
+    <None Include="crt.lst">
+      <Filter>Source Files\Header Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>
