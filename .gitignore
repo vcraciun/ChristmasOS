@@ -32,3 +32,7 @@
 *.app
 *.bin
 IMAGES/BOCHS-QEMU
+.vs
+bin_dump/bin_dump/Release
+ChristmasOS/Release
+*.pdb

@@ -42,3 +42,6 @@ An educational Operating System
 6. Add support for Network and GPU
 6. Add support for ML//LLM such that the OS will create binary applications on demand, and destroy them after usage
 
+
+## Screenshot
+[!Screenshot](screenshot.png)

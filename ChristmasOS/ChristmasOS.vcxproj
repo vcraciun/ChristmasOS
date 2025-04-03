@@ -139,10 +139,9 @@
 del *.bin
 echo Building CRT
 fasm crt.asm -s crt.a
-listing.exe crt.a crt.lst -a
 echo Building MBR
 fasm mbr.asm -s mbr.a
-listing.exe mbr.a mbr.lst -a</Command>
+</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>bin_dump.exe ..\Release\ChristmasOS.exe
